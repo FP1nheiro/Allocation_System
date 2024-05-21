@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Admin Panel</h1>
+    <h2>Files</h2>
+    <ul class="list-group">
+        {% for file in files %}
+        <li class="list-group-item">
+            {{ file.filename }} - {{ file.allocation_method }} ({{ file.size }} blocks)
+        </li>
+        {% endfor %}
+    </ul>
+    <h2>Tags</h2>
+    <ul class="list-group">
+        {% for tag in tags %}
+        <li class="list-group-item">
+            {{ tag.name }}
+        </li>
+        {% endfor %}
+    </ul>
+    <h2>Comments</h2>
+    <ul class="list-group">
+        {% for comment in comments %}
+        <li class="list-group-item">
+            {{ comment.content }} - {{ comment.timestamp }}
+        </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

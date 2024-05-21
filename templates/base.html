@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>File Upload System</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script>
+        var socket = io();
+        socket.on('file_uploaded', function(data) {
+            var fileList = document.getElementById('file-list');
+            var listItem = document.createElement('li');
+            listItem.className = 'list-group-item';
+            listItem.innerHTML = `<a href="/file/${data.id}">${data.filename}</a> - ${data.allocation_method} (${data.size} blocks)
+                                  <form action="/delete/${data.id}" method="post" style="display:inline;">
+                                      <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                  </form>`;
+            fileList.appendChild(listItem);
+        });
+
+        socket.on('file_deleted', function(data) {
+            var fileList = document.getElementById('file-list');
+            var listItem = document.querySelector(`form[action="/delete/${data.id}"]`).parentElement;
+            fileList.removeChild(listItem);
+        });
+    </script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">File Upload System</a>
+        <form class="form-inline my-2 my-lg-0 ml-auto" action="/search" method="get">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="query">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+    </nav>
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="alert alert-warning mt-3">
+                    {% for category, message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>
